@@ -1,0 +1,4 @@
+Left_h -173
+Left_v 0
+Right_h 181
+Right_v 26
