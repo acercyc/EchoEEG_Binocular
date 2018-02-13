@@ -1,4 +1,4 @@
-classdef PsyText_Prompt < PsyText & PsyResp
+classdef PsyText_Prompt < PsyText
 % 1.0 - Acer 2011/06/23_03:13
 % 2.0 - Acer 2012/11/22 08:01
 %       Change the name from PsyText_meg to PsyText_Prompt
@@ -14,8 +14,11 @@ classdef PsyText_Prompt < PsyText & PsyResp
 % 3.2 - Acer 2015/02/07 11:59
 %       Modify playRest_Block_pressKey
 %       Add playRest_Block_pressKey_autodetect
+% 4.0 - Acer 2018/01/25 18:14
+%       remove PsyResp inherent 
 
     properties
+        allowKey = [];
     end
     
     methods
@@ -26,30 +29,34 @@ classdef PsyText_Prompt < PsyText & PsyResp
         
         function playWelcome_and_prompt(obj)
             obj.text = sprintf('Welcome to this experiment\n\nPress SPACE to start');
-            obj.playCenter;
             obj.allowKey = 'space';
-            obj.waitPress();
-            obj.flip();            
+            obj.playTextAndWaitForKey();
         end
         
         function playGoodBye_and_prompt(obj)
         % Acer - 2015/02/03 12:46
             obj.text = sprintf('Thank you for your participation.\n\nPress SPACE to exit the program');
-            obj.playCenter;
             obj.allowKey = 'space';
-            obj.waitPress();
-            obj.flip();            
-        end        
+            obj.playTextAndWaitForKey();
+        end     
                 
         
         function playRest_Block_pressKey(obj, blockNum)
         % 1.1 - Acer 2015/02/07 11:21
             obj.text = sprintf('Remain %d block(s)\n\nPress SPACE to continue', blockNum);
-            obj.playCenter; 
             obj.allowKey = 'space';
-            obj.waitPress();
-            obj.flip();            
+            obj.playTextAndWaitForKey();
         end
+        
+        function [secs, keyCode, deltaSecs] = playTextAndWaitForKey(obj)
+            RestrictKeysForKbCheck(KbName(obj.allowKey));
+            obj.playCenter;
+            [secs, keyCode, deltaSecs] = KbPressWait();
+            RestrictKeysForKbCheck([]);
+            obj.flip();
+            QuitPsych('ESCAPE');
+        end
+                        
         
         function playRest_Block_pressKey_autodetect(obj, iTrial, nTrialInBlock, nTotalTrial)
         % 1.0 - Acer 2015/02/07 11:20
@@ -68,10 +75,8 @@ classdef PsyText_Prompt < PsyText & PsyResp
                 obj.playCenter;
             end
             obj.text = 'Press SPACE to continue';
-            obj.playCenter;
             obj.allowKey = 'space';
-            obj.waitPress();
-            obj.flip();
+            obj.playTextAndWaitForKey();            
         end
         
         

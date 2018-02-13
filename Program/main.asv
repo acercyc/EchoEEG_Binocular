@@ -54,8 +54,10 @@ parallelObj.send(0);
 % date log in
 data.date = datestr(now); 
 
+
 % Change Priority
 Priority(2);
+
 
 
 %% Subject information input
@@ -227,17 +229,11 @@ for iTrial = 1:para.trial.num
     
     data.trialInfo(iTrial).iShowLR = iShowLR;
     
-    
-    % Target trial arrangment
     if nRep(iTrial) ~= -1
         data.trialInfo(iTrial).triggerCode = nRep(iTrial) + iCondi(iTrial)*10;
-        data.trialInfo(iTrial).jitterTime = NaN;
-        data.trialInfo(iTrial).isTarget = 0;
     else
         data.trialInfo(iTrial).triggerCode = 100;
-        data.trialInfo(iTrial).jitterTime = unifrnd( para.target.showJitter(1),...
-            para.target.showJitter(2), 1);
-        data.trialInfo(iTrial).isTarget = 1;
+        data.trialInfo
     end
 end
 
@@ -252,7 +248,7 @@ PsyInitialize;
 commandwindow();
 
 % Screen
-Screen('Preference', 'SkipSyncTests', 1);
+% Screen('Preference', 'SkipSyncTests', 1);
 w = PsyScreen(para.screen.wNum);
 w.ctrl_gammaCorrection = para.screen.isGammaCorrection;
 if para.screen.resolustionSet
@@ -262,8 +258,8 @@ if para.screen.resolustionSet
     w.resolutionSet();
 end
 
-w.openTest([100 100 800 800]);
-% % w.open();
+% w.openTest([100 100 800 800]);
+w.open();
 
 
 
@@ -355,7 +351,6 @@ for iTrial = 1:para.trial.num
     % Send onset Trigger
     
     parallelObj.send( data.trialInfo(iTrial).triggerCode );
-    t0 = GetSecs();
         
     
     % Sequence Presentation
@@ -385,31 +380,22 @@ for iTrial = 1:para.trial.num
         % -------------------------------------------------------------
         % Target display period
         % -------------------------------------------------------------
-        if data.trialInfo(iTrial).isTarget
-            t1 = GetSecs;
-            if ((t1 - t0) >= data.trialInfo(iTrial).jitterTime) &...
-               ((t1 - t0) < (data.trialInfo(iTrial).jitterTime + para.target.duration))
-                tTcolor = para.target.intensityAmp + d.color;                   
+        if iSeq(trial) == -1
+            if (t1 - t0) >= trialInfo(trial).jitterTime &&...
+               (t1 - t0) < (trialInfo(trial).jitterTime + para.target.duration)
+                tTcolor = trialInfo(trial).sequence(iFrame) +...
+                          para.target.intensityAmp;
                 if tTcolor > 255; tTcolor = 255; end
-                t.color = tTcolor;
-
-
-                if data.trialInfo(iTrial).iShowLR == 1
-                    t.center = diskCentreL;
-                    t.draw();
-                elseif data.trialInfo(iTrial).iShowLR == 2
-                    t.center = diskCentreR;
-                    t.draw();
-                elseif data.trialInfo(iTrial).iShowLR == 3
-                    t.center = diskCentreL;
-                    t.draw();                
-                    t.center = diskCentreR;
-                    t.draw();                
-                end              
-
+                t.color = repmat(tTcolor, 1, 3);
                 t.draw();
-%                 fix.draw();
-            end            
+                fix.draw();
+
+                % Trigger
+                if ~targetOn
+                    targetOn = 1;
+                    parallelObj.send(trialInfo(trial).type + 10);                    
+                end           
+            end
         end
         % -------------------------------------------------------------
         
@@ -421,22 +407,7 @@ for iTrial = 1:para.trial.num
     fix.draw();
     fix.xy = centreR;    
     fix.play();
-    
-    % ================================ KB response =============================== %
-    keyIsDown = 0;
-    t0 = GetSecs();
-    while GetSecs()-t0 < data.trialInfo(iTrial).ITI
-        keyIsDown = KbCheck();
-    end
-    
-    if data.trialInfo(iTrial).isTarget
-        data.trialInfo(iTrial).isCorrect = keyIsDown;
-    else
-        data.trialInfo(iTrial).isCorrect = ~keyIsDown;
-    end
-    
     % ======================= End of sequence presentation ======================= % 
-    
     
     % data login 
     data.trialInfo(iTrial).trialEndTime = datestr(now,'yyyy-mm-dd HH:MM:SS');
