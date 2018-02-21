@@ -8,6 +8,7 @@ function main()
 %   2: rep x 1
 %   3
 %   4
+%   100: target trial
 %   254: Rest start
 %   255: Rest end
 %
@@ -32,6 +33,8 @@ function main()
 
 %
 % 1.0 - Acer 2016/11/01 10:32
+% 2.0 - Acer 2018/02/21 16:16
+%       Add target trials
 % ============================================================================ %
 
 %% Initialize
@@ -74,6 +77,7 @@ para.screen.refreshRate = 160;
 para.screen.width = 800;
 para.screen.height = 600;
 para.screen.isGammaCorrection = 0;
+checkScreenSetting(para.screen.wNum);
 
 % binocular 
 % ----------------------------------------------------------------------------
@@ -93,7 +97,7 @@ para.trial.ITI = [2.5 3.5];
 % ----------------------------------------------------------------------------
 para.seq.duration = 3.125;
 para.seq.size = 100;
-para.seq.eccentricity = [0 -115]; 
+para.seq.eccentricity = [0 -120]; 
 para.seq.nFrame = para.seq.duration * para.screen.refreshRate;
 
 
@@ -262,8 +266,8 @@ if para.screen.resolustionSet
     w.resolutionSet();
 end
 
-w.openTest([100 100 800 800]);
-% % w.open();
+% w.openTest([100 100 800 800]);
+w.open();
 
 
 
