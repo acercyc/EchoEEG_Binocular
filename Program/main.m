@@ -27,14 +27,16 @@ function main()
 % trigger code:
 % D1D2
 % D1: condition
-% D2: repetition #
+% D2: repetition
  
 
 
-%
+
 % 1.0 - Acer 2016/11/01 10:32
 % 2.0 - Acer 2018/02/21 16:16
 %       Add target trials
+% 2.1 - Acer 2018/02/22 10:56
+%       Fix trigger error
 % ============================================================================ %
 
 %% Initialize
@@ -77,7 +79,7 @@ para.screen.refreshRate = 160;
 para.screen.width = 800;
 para.screen.height = 600;
 para.screen.isGammaCorrection = 0;
-checkScreenSetting(para.screen.wNum);
+% checkScreenSetting(para.screen.wNum);
 
 % binocular 
 % ----------------------------------------------------------------------------
@@ -164,10 +166,10 @@ for iSet = 1:para.repSeq.nSet
     iSeq_comb = [iSeq_comb, iSeq(:, iSet)'];
     iSeq_comb = [iSeq_comb, topping];
     
-    nRep_comb = [nRep_comb, iSeq(:, iSet)'];
+    nRep_comb = [nRep_comb, nRep(:, iSet)'];
     nRep_comb = [nRep_comb, topping];
     
-    iCondi_comb = [iCondi_comb, iSeq(:, iSet)'];
+    iCondi_comb = [iCondi_comb, iCondi(:, iSet)'];
     iCondi_comb = [iCondi_comb, topping];    
 end
 
@@ -266,8 +268,8 @@ if para.screen.resolustionSet
     w.resolutionSet();
 end
 
-% w.openTest([100 100 800 800]);
-w.open();
+w.openTest([100 100 800 800]);
+% w.open();
 
 
 
