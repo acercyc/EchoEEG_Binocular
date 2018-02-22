@@ -52,7 +52,7 @@ disp('PsyObj imported');
 % parallele obj
 % ----------------------------------------------------------------------
 parallelObj = PsyParallelPort;
-% parallelObj.enableTTL;
+parallelObj.enableTTL;
 % parallelObj.disablePrint;
 parallelObj.send(0);
 
@@ -79,7 +79,9 @@ para.screen.refreshRate = 160;
 para.screen.width = 800;
 para.screen.height = 600;
 para.screen.isGammaCorrection = 0;
-% checkScreenSetting(para.screen.wNum);
+
+% comment out this line if you don't want to check 
+checkScreenSetting(para.screen.wNum);
 
 % binocular 
 % ----------------------------------------------------------------------------
